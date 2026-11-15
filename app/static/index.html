@@ -1,0 +1,351 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Parqueadero Montería · Reservas por zona</title>
+  <link rel="stylesheet" href="/static/styles.css">
+</head>
+<body>
+  <div class="app">
+
+    <!-- ===================== Barra lateral ===================== -->
+    <aside class="sidebar">
+      <div class="brand">
+        <div class="brand-mark">P</div>
+        <div>
+          <div class="brand-name">Parqueadero</div>
+          <div class="brand-sub">Sede Montería</div>
+        </div>
+      </div>
+
+      <nav class="nav" aria-label="Secciones">
+        <button class="nav-item active" data-view="inicio">
+          <span class="nav-ico">⌂</span> Inicio
+        </button>
+        <button class="nav-item" data-view="mapa">
+          <span class="nav-ico">◫</span> Mapa de zonas
+        </button>
+        <button class="nav-item" data-view="reservar">
+          <span class="nav-ico">＋</span> Reservar
+        </button>
+        <button class="nav-item" data-view="mis-reservas">
+          <span class="nav-ico">☰</span> Mis reservas
+        </button>
+        <button class="nav-item" data-view="calidad">
+          <span class="nav-ico">✓</span> Datos y pruebas
+        </button>
+      </nav>
+
+      <div class="sidebar-foot">
+        <div class="status" id="estado-api"><span class="dot"></span><span>Comprobando API…</span></div>
+        <div class="links">
+          <a href="/docs" target="_blank" rel="noopener">Documentación API</a>
+          <a href="/redoc" target="_blank" rel="noopener">ReDoc</a>
+        </div>
+      </div>
+    </aside>
+
+    <!-- ===================== Contenido ===================== -->
+    <!-- ===================== Contenido ===================== -->
+    <main class="main">
+      <header class="topbar">
+        <div>
+          <h1 id="titulo-vista">Inicio</h1>
+          <p id="subtitulo-vista" class="muted">Resumen de la sede y de las zonas</p>
+        </div>
+        <div class="topbar-actions">
+          <div id="ticker-reserva" class="ticker-reserva hidden">
+            <span class="ticker-icon">⏳</span>
+            <span id="ticker-texto">Reserva activa</span>
+          </div>
+          <div class="sede-pill">📍 Montería · Córdoba</div>
+        </div>
+      </header>
+
+      <!-- Banner de recordatorio urgente (10 min antes de vencer) -->
+      <div id="banner-recordatorio" class="banner-alerta hidden" role="alert">
+        <div class="banner-icono">⚠️</div>
+        <div class="banner-info">
+          <strong id="banner-titulo">¡Tu reserva está por terminar!</strong>
+          <p id="banner-desc">Te quedan menos de 10 minutos en tu puesto reservado.</p>
+        </div>
+        <div class="banner-acciones">
+          <button type="button" class="btn btn-sm btn-primary" id="btn-banner-ampliar-30">⏱ Ampliar +30 min</button>
+          <button type="button" class="btn btn-sm" id="btn-banner-ampliar-60">⏱ Ampliar +1 hora</button>
+          <button type="button" class="btn-icon" id="btn-banner-cerrar" title="Ocultar recordatorio">✕</button>
+        </div>
+      </div>
+
+      <div id="mensaje-global" class="alert hidden" role="status"></div>
+
+      <!-- ---------- Inicio ---------- -->
+      <section class="view active" id="v-inicio">
+        <div class="kpis">
+          <div class="kpi"><span class="kpi-label">Zonas en la sede</span><strong id="kpi-zonas">—</strong><span class="kpi-note">Catálogo de 30 zonas</span></div>
+          <div class="kpi"><span class="kpi-label">Zonas reservables</span><strong id="kpi-reservables">—</strong><span class="kpi-note" id="kpi-no-reservables"></span></div>
+          <div class="kpi"><span class="kpi-label">Capacidad total</span><strong id="kpi-capacidad">—</strong><span class="kpi-note">Vehículos en la sede</span></div>
+          <div class="kpi"><span class="kpi-label">Lecturas guardadas</span><strong id="kpi-lecturas">—</strong><span class="kpi-note">Histórico de ocupación</span></div>
+        </div>
+
+        <div class="grid-2">
+          <div class="card">
+            <div class="card-head"><h2>Cómo reservar</h2></div>
+            <ol class="pasos">
+              <li><b>Elige una zona</b> en el mapa o en el formulario.</li>
+              <li><b>Revisa sus restricciones</b>: vehículos, horario y duración máxima.</li>
+              <li><b>Confirma el horario</b>. Recibirás tu comprobante con hora exacta y recordatorio.</li>
+            </ol>
+            <div class="actions">
+              <button class="btn btn-primary" data-go="reservar">Hacer una reserva</button>
+              <button class="btn" data-go="mapa">Ver el mapa</button>
+            </div>
+          </div>
+          <div class="card">
+            <div class="card-head"><h2>Zonas por sector</h2></div>
+            <div class="table-wrap">
+              <table class="tabla">
+                <thead><tr><th>Sector</th><th class="num">Zonas</th><th class="num">Reservables</th><th class="num">Capacidad</th></tr></thead>
+                <tbody id="tabla-sectores"><tr><td colspan="4" class="muted">Cargando…</td></tr></tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ---------- Mapa ---------- -->
+      <section class="view" id="v-mapa">
+        <div class="mapa-filtros">
+          <span class="filtro-label">Filtrar mapa:</span>
+          <button class="filtro-btn active" data-filtro="todos">Todas las zonas (30)</button>
+          <button class="filtro-btn" data-filtro="con-reservas">Con reservas activas</button>
+          <button class="filtro-btn" data-filtro="mis-reservas">★ Mi reserva activa</button>
+        </div>
+        <div class="mapa-layout">
+          <div class="card mapa-card">
+            <div class="card-head">
+              <h2>Esquema interactivo de la sede</h2>
+              <div class="leyenda">
+                <span><i class="sw sw-ok"></i>Reservable</span>
+                <span><i class="sw sw-res"></i>Con reservas</span>
+                <span><i class="sw sw-mia"></i>Tu reserva activa</span>
+                <span><i class="sw sw-no"></i>No reservable</span>
+                <span><i class="sw sw-sel"></i>Seleccionada</span>
+              </div>
+            </div>
+            <svg id="mapa" viewBox="-2 0 104 98" role="img" aria-label="Esquema de zonas de la sede Montería"></svg>
+            <p class="nota">Haz clic en cualquier zona para ver disponibilidad en vivo y restricciones.</p>
+          </div>
+          <aside class="card detalle" id="detalle-zona">
+            <p class="muted">Selecciona una zona en el esquema para ver sus restricciones.</p>
+          </aside>
+        </div>
+      </section>
+
+      <!-- ---------- Reservar ---------- -->
+      <section class="view" id="v-reservar">
+        <div class="reservar-layout">
+          <form class="card form" id="form-reserva" novalidate>
+            <div class="card-head"><h2>Datos de la reserva</h2></div>
+
+            <fieldset>
+              <legend>Persona</legend>
+              <div class="campos">
+                <label>Identificación <input name="identificacion" required placeholder="Ej. 1001234567" autocomplete="off"></label>
+                <label>Nombre <input name="nombre" required placeholder="Nombre completo" autocomplete="off"></label>
+                <label>Tipo de vehículo
+                  <select name="tipo_vehiculo" required>
+                    <option value="carro">Carro</option>
+                    <option value="moto">Moto</option>
+                  </select>
+                </label>
+                <label>Placa <span class="opcional">(opcional)</span> <input name="placa" placeholder="ABC123" maxlength="8" autocomplete="off"></label>
+              </div>
+            </fieldset>
+
+            <fieldset>
+              <legend>Zona y horario</legend>
+              <label class="full">Zona
+                <select name="codigo_zona" id="select-zona" required></select>
+              </label>
+              <div class="campos">
+                <label>Fecha <input type="date" name="fecha" required></label>
+                <label>Hora de inicio <input type="time" name="inicio" required step="900"></label>
+                <label>Hora de fin <input type="time" name="fin" required step="900"></label>
+              </div>
+            </fieldset>
+
+            <div class="form-acciones">
+              <button type="button" class="btn" id="btn-disponibilidad">Consultar cupos</button>
+              <button type="submit" class="btn btn-primary" id="btn-reservar">Confirmar reserva</button>
+            </div>
+            <div id="resultado-disponibilidad" class="hidden"></div>
+            <div id="resultado-reserva" class="hidden"></div>
+          </form>
+
+          <aside class="card restricciones" id="panel-restricciones">
+            <div class="card-head"><h2>Restricciones de la zona</h2></div>
+            <div id="contenido-restricciones"><p class="muted">Elige una zona para ver sus condiciones.</p></div>
+          </aside>
+        </div>
+      </section>
+
+      <!-- ---------- Mis reservas ---------- -->
+      <section class="view" id="v-mis-reservas">
+        <!-- Subpestañas en Mis Reservas -->
+        <div class="subtabs">
+          <button class="subtab-btn active" data-subtab="usuario">Mis reservas registradas</button>
+          <button class="subtab-btn" data-subtab="todas-zonas">Zonas reservadas en vivo (Campus)</button>
+        </div>
+
+        <div id="subtab-contenido-usuario">
+          <div class="card">
+            <form class="buscar" id="form-buscar">
+              <label class="grow">Identificación
+                <input name="identificacion" id="input-buscar-id" placeholder="Escribe tu identificación" required autocomplete="off">
+              </label>
+              <button type="submit" class="btn btn-primary">Buscar mis reservas</button>
+              <button type="button" class="btn btn-sm" id="btn-demo-alerta" title="Simular que te faltan 10 minutos para probar el recordatorio y la ampliación de tiempo">
+                ⚡ Probar alerta 10 min
+              </button>
+            </form>
+          </div>
+          <div id="lista-reservas" class="reservas-lista"></div>
+        </div>
+
+        <div id="subtab-contenido-todas" class="hidden">
+          <div class="card">
+            <div class="card-head">
+              <h2>Zonas y cupos reservados actualmente en el campus</h2>
+              <button class="btn btn-sm" id="btn-recargar-activas">↻ Actualizar en vivo</button>
+            </div>
+            <p class="muted" style="margin-bottom:14px;">Consulta automática de todas las zonas donde se han generado reservas activas.</p>
+            <div id="lista-todas-reservas" class="reservas-lista"></div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ---------- Calidad ---------- -->
+      <section class="view" id="v-calidad">
+        <div class="grid-2">
+          <div class="card">
+            <div class="card-head">
+              <h2>Carga de datos (pipeline)</h2>
+              <button class="btn btn-sm" id="btn-actualizar-pipeline">Actualizar</button>
+            </div>
+            <div id="pipeline-resumen"><p class="muted">Cargando…</p></div>
+          </div>
+          <div class="card">
+            <div class="card-head">
+              <h2>Pruebas automáticas</h2>
+              <button class="btn btn-primary btn-sm" id="btn-pruebas">Ejecutar pruebas</button>
+            </div>
+            <div id="pruebas-resumen"><p class="muted">Ejecuta las pruebas para ver el resultado real del servidor.</p></div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-head"><h2>Salida de pytest</h2></div>
+          <pre class="salida" id="pruebas-salida">—</pre>
+        </div>
+      </section>
+
+    </main>
+  </div>
+
+  <!-- ===================== Modal de Comprobante / Ticket ===================== -->
+  <div id="modal-comprobante" class="modal-overlay hidden" role="dialog" aria-modal="true" aria-labelledby="modal-ticket-titulo">
+    <div class="modal-card ticket">
+      <div class="ticket-header">
+        <div class="ticket-badge-ok">✓ RESERVA CONFIRMADA</div>
+        <h2 id="modal-ticket-titulo">Comprobante de Parqueo</h2>
+        <div class="ticket-sub">Universidad · Sede Montería</div>
+      </div>
+      <div class="ticket-body">
+        <div class="ticket-folio">
+          <span class="folio-label">FOLIO / TICKET</span>
+          <strong id="ticket-id">#—</strong>
+        </div>
+
+        <div class="ticket-destacado">
+          <div class="destacado-item">
+            <span class="destacado-label">HORA ENTRADA</span>
+            <strong id="ticket-inicio">—</strong>
+          </div>
+          <div class="destacado-flecha">➔</div>
+          <div class="destacado-item">
+            <span class="destacado-label">HORA SALIDA (MÁX)</span>
+            <strong id="ticket-fin">—</strong>
+          </div>
+        </div>
+
+        <div class="ticket-detalles">
+          <div class="ticket-fila">
+            <span>Zona asignada:</span>
+            <strong id="ticket-zona">—</strong>
+          </div>
+          <div class="ticket-fila">
+            <span>Sector:</span>
+            <strong id="ticket-sector">—</strong>
+          </div>
+          <div class="ticket-fila">
+            <span>Titular:</span>
+            <strong id="ticket-titular">—</strong>
+          </div>
+          <div class="ticket-fila">
+            <span>Identificación:</span>
+            <strong id="ticket-id-persona">—</strong>
+          </div>
+          <div class="ticket-fila">
+            <span>Vehículo / Placa:</span>
+            <strong id="ticket-vehiculo">—</strong>
+          </div>
+          <div class="ticket-fila">
+            <span>Fecha y hora reserva:</span>
+            <strong id="ticket-creada">—</strong>
+          </div>
+        </div>
+
+        <!-- Código QR SVG generado dinámicamente -->
+        <div class="ticket-qr-wrap">
+          <div id="ticket-qr" class="ticket-qr"></div>
+          <span class="ticket-qr-nota">Presenta este código al ingresar y salir del parqueadero</span>
+        </div>
+
+        <div class="ticket-recordatorio-info">
+          🔔 <b>Recordatorio activado:</b> Recibirás una alerta en pantalla <b>10 minutos antes</b> de que termine tu tiempo por si necesitas ampliarlo.
+        </div>
+      </div>
+      <div class="ticket-footer">
+        <button type="button" class="btn btn-primary" id="btn-imprimir-ticket">🖨 Imprimir / Guardar</button>
+        <button type="button" class="btn" id="btn-ir-mis-reservas">Ver en Mis Reservas</button>
+        <button type="button" class="btn" id="btn-cerrar-modal">Cerrar</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===================== Modal de Ampliar Tiempo ===================== -->
+  <div id="modal-ampliar" class="modal-overlay hidden" role="dialog" aria-modal="true" aria-labelledby="modal-ampliar-titulo">
+    <div class="modal-card">
+      <div class="modal-head">
+        <h2 id="modal-ampliar-titulo">⏱ Ampliar tiempo de reserva</h2>
+        <button type="button" class="btn-icon" id="btn-cerrar-modal-ampliar">✕</button>
+      </div>
+      <div class="modal-body">
+        <p class="muted">Selecciona cuánto tiempo deseas sumar a tu reserva actual:</p>
+        <div class="opciones-ampliar">
+          <button type="button" class="btn-opcion" data-minutos="15"><b>+15 minutos</b><span>Rápido</span></button>
+          <button type="button" class="btn-opcion popular" data-minutos="30"><b>+30 minutos</b><span>Recomendado</span></button>
+          <button type="button" class="btn-opcion" data-minutos="60"><b>+1 hora</b><span>Estándar</span></button>
+          <button type="button" class="btn-opcion" data-minutos="120"><b>+2 horas</b><span>Extendido</span></button>
+        </div>
+        <div id="mensaje-modal-ampliar" class="hidden" style="margin-top:14px;"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Contenedor para notificaciones Toast flotantes -->
+  <div id="toast-container" class="toast-container" aria-live="polite"></div>
+
+  <script src="/static/app.js"></script>
+</body>
+</html>

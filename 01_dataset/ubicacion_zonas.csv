@@ -1,0 +1,31 @@
+codigo_zona,sede_id,nombre,sector,x,y
+BHMBCCMKT01,1,Norte · Bloque 1,Norte,8,10
+BHMBCCPST01,1,Norte · Bloque 2,Norte,24,10
+BHMBCCSNH01,1,Norte · Bloque 3,Norte,40,10
+BHMBCCTHL01,1,Norte · Bloque 4,Norte,56,10
+BHMBRCBRG01,1,Norte · Bloque 5,Norte,72,10
+BHMBRCBRG02,1,Norte · Bloque 6,Norte,88,10
+BHMBRCBRG03,1,Oriente · Bloque 1,Oriente,8,28
+BHMBRTARC01,1,Oriente · Bloque 2,Oriente,24,28
+BHMEURBRD01,1,Oriente · Bloque 3,Oriente,40,28
+BHMEURBRD02,1,Oriente · Bloque 4,Oriente,56,28
+BHMMBMMBX01,1,Oriente · Bloque 5,Oriente,72,28
+BHMNCPHST01,1,Oriente · Bloque 6,Oriente,88,28
+BHMNCPLDH01,1,Centro · Bloque 1,Centro,8,46
+BHMNCPNHS01,1,Centro · Bloque 2,Centro,24,46
+BHMNCPNST01,1,Centro · Bloque 3,Centro,40,46
+BHMNCPPLS01,1,Centro · Bloque 4,Centro,56,46
+BHMNCPRAN01,1,Centro · Bloque 5,Centro,72,46
+Broad Street,1,Centro · Bloque 6,Centro,88,46
+Bull Ring,1,Occidente · Bloque 1,Occidente,8,64
+NIA Car Parks,1,Occidente · Bloque 2,Occidente,24,64
+NIA North,1,Occidente · Bloque 3,Occidente,40,64
+NIA South,1,Occidente · Bloque 4,Occidente,56,64
+Others-CCCPS105a,1,Occidente · Bloque 5,Occidente,72,64
+Others-CCCPS119a,1,Occidente · Bloque 6,Occidente,88,64
+Others-CCCPS133,1,Sur · Bloque 1,Sur,8,82
+Others-CCCPS135a,1,Sur · Bloque 2,Sur,24,82
+Others-CCCPS202,1,Sur · Bloque 3,Sur,40,82
+Others-CCCPS8,1,Sur · Bloque 4,Sur,56,82
+Others-CCCPS98,1,Sur · Bloque 5,Sur,72,82
+Shopping,1,Sur · Bloque 6,Sur,88,82

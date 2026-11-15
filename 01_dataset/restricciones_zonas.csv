@@ -1,0 +1,31 @@
+codigo_zona,reservable,tipos_permitidos,hora_apertura,hora_cierre,max_horas_reserva,max_reservas_activas_usuario,nota
+BHMBCCMKT01,1,"carro,moto",06:00,22:00,8,2,
+BHMBCCPST01,1,"carro,moto",06:00,22:00,8,2,
+BHMBCCSNH01,1,"carro,moto",06:00,22:00,8,2,
+BHMBCCTHL01,1,"carro,moto",06:00,22:00,8,2,
+BHMBRCBRG01,1,"carro,moto",06:00,22:00,8,2,
+BHMBRCBRG02,1,"carro,moto",06:00,22:00,8,2,
+BHMBRCBRG03,1,"carro,moto",06:00,22:00,8,2,
+BHMBRTARC01,1,"carro,moto",06:00,22:00,8,2,
+BHMEURBRD01,1,"carro,moto",06:00,22:00,8,2,
+BHMEURBRD02,0,"carro,moto",06:00,22:00,8,2,Zona pequeña de rotación
+BHMMBMMBX01,1,"carro,moto",06:00,22:00,8,2,
+BHMNCPHST01,1,"carro,moto",06:00,22:00,8,2,
+BHMNCPLDH01,1,carro,07:00,20:00,4,1,Zona central: solo carros y horario reducido
+BHMNCPNHS01,1,carro,07:00,20:00,4,1,Zona central: solo carros y horario reducido
+BHMNCPNST01,1,carro,07:00,20:00,4,1,Zona central: solo carros y horario reducido
+BHMNCPPLS01,1,carro,07:00,20:00,4,1,Zona central: solo carros y horario reducido
+BHMNCPRAN01,1,carro,07:00,20:00,4,1,Zona central: solo carros y horario reducido
+Broad Street,1,carro,07:00,20:00,4,1,Zona central: solo carros y horario reducido
+Bull Ring,1,"carro,moto",06:00,22:00,8,2,
+NIA Car Parks,1,"carro,moto",06:00,22:00,8,2,
+NIA North,1,"carro,moto",06:00,22:00,8,2,
+NIA South,1,"carro,moto",06:00,22:00,8,2,
+Others-CCCPS105a,1,"carro,moto",06:00,22:00,8,2,
+Others-CCCPS119a,1,"carro,moto",06:00,22:00,8,2,
+Others-CCCPS133,1,"carro,moto",06:00,22:00,8,2,
+Others-CCCPS135a,1,"carro,moto",06:00,22:00,8,2,
+Others-CCCPS202,1,"carro,moto",06:00,22:00,8,2,
+Others-CCCPS8,1,"carro,moto",06:00,22:00,8,2,
+Others-CCCPS98,1,"carro,moto",06:00,22:00,8,2,
+Shopping,1,"carro,moto",06:00,22:00,8,2,
